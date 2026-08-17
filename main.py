@@ -1,5 +1,5 @@
 import pandas as pd 
-from model import split_data
+from model import split_data, train_model, make_predictions, evaluate_model
 
 #load the dataset
 data = pd.read_csv("2025_2026 dataset.csv")
@@ -217,24 +217,67 @@ team_matches["Last5Conceded"] = (
     .fillna(0)
 )
 
-'''print(
-    team_matches[team_matches["Team"] == "Liverpool"][
-        [
-            "Date",
-            "Team",
-            "Opponent",
-            "GoalsScored",
-            "GoalsConceded",
-            "GoalsBefore",
-            "ConcededBefore",
-            "MatchesBefore",
-            "AvgGoalsBefore",
-            "AvgConcededBefore",
-            "Last5Goals",
-            "Last5Conceded"
-        ]
-    
-].head(10))'''
+team_matches["Win"] = (
+    team_matches["GoalsScored"] > team_matches["GoalsConceded"]
+).astype(int)
+
+team_matches["WinsBefore"] = (
+    team_matches.groupby("Team")["Win"].cumsum().groupby(team_matches["Team"]).shift(1).fillna(0)
+)
+
+team_matches["WinRateBefore"] = (
+    team_matches["WinsBefore"] / team_matches["MatchesBefore"].replace(0, float("nan"))
+)
+team_matches["WinRateBefore"] = team_matches["WinRateBefore"].fillna(0)
+
+team_matches["IsHome"] = (
+    team_matches["Team"] == team_matches["Home Team"]
+).astype(int)
+
+team_matches["IsAway"] = (
+    team_matches["Team"] == team_matches["Away Team"]
+).astype(int)
+
+team_matches["HomeWin"] = (
+    team_matches["Win"] * team_matches["IsHome"]
+)
+
+team_matches["AwayWin"] = (
+    team_matches["Win"] * team_matches["IsAway"]
+)
+
+team_matches["HomeWinsBefore"] = (
+    team_matches.groupby("Team")["HomeWin"]
+    .transform(lambda x: x.shift(1).fillna(0).cumsum())
+)
+
+team_matches["AwayWinsBefore"] = (
+    team_matches.groupby("Team")["AwayWin"]
+    .transform(lambda x: x.shift(1).fillna(0).cumsum())
+)
+
+team_matches["HomeMatchesBefore"] = (
+    team_matches.groupby("Team")["IsHome"]
+    .transform(lambda x: x.shift(1).fillna(0).cumsum())
+)
+
+team_matches["AwayMatchesBefore"] = (
+    team_matches.groupby("Team")["IsAway"]
+    .transform(lambda x: x.shift(1).fillna(0).cumsum())
+)
+
+team_matches["HomeWinRate"] = (
+    team_matches["HomeWinsBefore"] /
+    team_matches["HomeMatchesBefore"].replace(0, float("nan"))
+)
+team_matches["HomeWinRate"] = team_matches["HomeWinRate"].fillna(0)
+
+team_matches["AwayWinRate"] = (
+    team_matches["AwayWinsBefore"] /
+    team_matches["AwayMatchesBefore"].replace(0, float("nan"))
+)
+team_matches["AwayWinRate"] = team_matches["AwayWinRate"].fillna(0)
+
 
 home_features = team_matches[
     team_matches["Team"] == team_matches["Home Team"]
@@ -249,7 +292,7 @@ home_features = home_features.rename(
         "AvgGoalsBefore": "HomeAvgGoalsBefore",
         "AvgConcededBefore": "HomeAvgConcededBefore",
         "Last5Goals": "HomeLast5Goals",
-        "Last5Conceded": "HomeLast5Conceded"
+        "Last5Conceded": "HomeLast5Conceded",
     }
 )
 
@@ -335,5 +378,10 @@ x = data[
 
 y = data["Outcome"]
 
+#Model work
 x_train, x_test, y_train, y_test = split_data(x, y)
+model = train_model(x_train, y_train)
+predictions = make_predictions(model, x_test)
+accuracy = evaluate_model(y_test, predictions)
 
+#print(f"Accuracy: {accuracy:.2%}")
