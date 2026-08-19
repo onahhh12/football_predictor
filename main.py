@@ -283,9 +283,6 @@ home_features = team_matches[
     team_matches["Team"] == team_matches["Home Team"]
 ].copy()
 
-away_features = team_matches[
-    team_matches["Team"] == team_matches["Away Team"]
-].copy()
 
 home_features = home_features.rename(
     columns={
@@ -293,69 +290,93 @@ home_features = home_features.rename(
         "AvgConcededBefore": "HomeAvgConcededBefore",
         "Last5Goals": "HomeLast5Goals",
         "Last5Conceded": "HomeLast5Conceded",
+        "WinRateBefore": "HomeWinRateBefore"
     }
 )
+
+
+away_features = team_matches[
+    team_matches["Team"] == team_matches["Away Team"]
+].copy()
 
 away_features = away_features.rename(
     columns={
         "AvgGoalsBefore": "AwayAvgGoalsBefore",
         "AvgConcededBefore": "AwayAvgConcededBefore",
         "Last5Goals": "AwayLast5Goals",
-        "Last5Conceded": "AwayLast5Conceded"
+        "Last5Conceded": "AwayLast5Conceded",
+        "WinRateBefore": "AwayWinRateBefore"
     }
 )
 
-
-data = data.merge(
-    home_features[
-        [
-            "Date",
-            "Home Team",
-            "Away Team",
-            "HomeAvgGoalsBefore",
-            "HomeAvgConcededBefore",
-            "HomeLast5Goals",
-            "HomeLast5Conceded"
-        ]
-    ],
+match_data = home_features.merge(
+    away_features,
     on = ["Date", "Home Team", "Away Team"],
     how = "left"
 )
 
-data = data.merge(
-    away_features[
-        [
-            "Date",
-            "Home Team",
-            "Away Team",
-            "AwayAvgGoalsBefore",
-            "AwayAvgConcededBefore",
-            "AwayLast5Goals",
-            "AwayLast5Conceded"
-        ]
-    ],
-    on = ["Date", "Home Team", "Away Team"],
-    how = "left"
+
+
+features = match_data[
+    [
+        "Date",
+        "Home Team",
+        "Away Team",
+
+        "HomeAvgGoalsBefore",
+        "HomeAvgConcededBefore",
+        "HomeLast5Goals",
+        "HomeLast5Conceded",
+        "HomeWinRateBefore",
+
+        "AwayAvgGoalsBefore",
+        "AwayAvgConcededBefore",
+        "AwayLast5Goals",
+        "AwayLast5Conceded",
+        "AwayWinRateBefore"
+    ]
+].copy()
+
+features = features.rename(columns={
+
+    "AvgGoalsBefore_home": "HomeAvgGoalsBefore",
+    "AvgConcededBefore_home": "HomeAvgConcededBefore",
+    "Last5Goals_home": "HomeLast5Goals",
+    "Last5Conceded_home": "HomeLast5Conceded",
+    "WinRateBefore_home": "HomeWinRate",
+
+    "AvgGoalsBefore_away": "AwayAvgGoalsBefore",
+    "AvgConcededBefore_away": "AwayAvgConcededBefore",
+    "Last5Goals_away": "AwayLast5Goals",
+    "Last5Conceded_away": "AwayLast5Conceded",
+    "WinRateBefore_away": "AwayWinRate"
+})
+
+print(features.shape)
+print(features.columns.tolist())
+
+
+features["AttackDifference"] = (
+    features["HomeAvgGoalsBefore"] - features["AwayAvgGoalsBefore"]
 )
 
-data["AttackDifference"] = (
-    data["HomeAvgGoalsBefore"] - data["AwayAvgGoalsBefore"]
+features["DefenseDifference"] = (
+    features["AwayAvgConcededBefore"] - features["HomeAvgConcededBefore"]
 )
 
-data["DefenseDifference"] = (
-    data["AwayAvgConcededBefore"] - data["HomeAvgConcededBefore"]
+features["FormDifference"] = (
+    features["HomeLast5Goals"] - features["AwayLast5Goals"]
 )
 
-data["FormDifference"] = (
-    data["HomeLast5Goals"] - data["AwayLast5Goals"]
+features["FormDefenseDifference"] = (
+    features["AwayLast5Conceded"] - features["HomeLast5Conceded"]
 )
 
-data["FormDefenseDifference"] = (
-    data["AwayLast5Conceded"] - data["HomeLast5Conceded"]
-)
+print(features.shape)
+print(features.columns.tolist())
 
 '''print(
-    data[
+    features[
         [
             "Home Team",
             "Away Team",
@@ -365,9 +386,9 @@ data["FormDefenseDifference"] = (
             "FormDefenseDifference"
         ]
     ].head(10)
-)'''
+)
 
-x = data[
+x = features[
     [
         "AttackDifference",
         "DefenseDifference",
@@ -384,4 +405,4 @@ model = train_model(x_train, y_train)
 predictions = make_predictions(model, x_test)
 accuracy = evaluate_model(y_test, predictions)
 
-#print(f"Accuracy: {accuracy:.2%}")
+#print(f"Accuracy: {accuracy:.2%}")'''
