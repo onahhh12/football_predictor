@@ -12,7 +12,7 @@ def load_data():
 
 @st.cache_data
 def load_previous_season():
-    return pd.read_csv("2025_2026 dataset.csv")
+    return pd.read_csv("E0 (1).csv")
  
  
 @st.cache_resource
