@@ -29,8 +29,8 @@ def load_data():
 @st.cache_data
 def load_previous_season():
     return pd.read_csv("2025_2026 dataset.csv")
-
-
+ 
+ 
 @st.cache_resource
 def train():
     """
