@@ -3,7 +3,7 @@ from features import create_features
 from model import split_data, train_model, make_predictions, evaluate_model
  
 # Load the dataset
-data = pd.read_csv("2025_2026 dataset.csv")
+data = pd.read_csv("2026_2027 dataset.csv")
  
 #Create features (includes Outcome label)
 features = create_features(data)

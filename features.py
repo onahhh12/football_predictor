@@ -191,6 +191,11 @@ def create_features(data):
 
 
 def get_latest_team_stats(data):
+    """
+    Returns each team's cumulative stats through their most recent
+    played match — used as the "before" stats for that team's NEXT
+    (not yet played) fixture, for live predictions.
+    """
     data = data.copy()
     goals = data["Result"].str.split("-", expand=True).astype(int)
     goals.columns = ["HomeGoals", "AwayGoals"]
@@ -250,17 +255,20 @@ def get_latest_team_stats(data):
         "WinRate", "PointsTotal", "MatchesPlayed",
     ]]
 
-def get_live_team_stats(current_data, previous_season_data, min_matches=5):
-    """
-    Like get_latest_team_stats, but blends in a fallback baseline for
-    teams with limited current-season history:
-      - Returning teams (played in previous_season_data) blend toward
-        their OWN last-season stats.
-      - Newly promoted teams (no previous-season PL data) blend toward
-        the league-wide average instead.
-    The blend fades out linearly as MatchesPlayed approaches min_matches.
-    """
-    current_stats = get_latest_team_stats(current_data)
+
+def get_latest_team_stats_safe(data):
+    """Same as get_latest_team_stats, but returns an empty frame
+    instead of erroring when there's no current-season data yet."""
+    if data.empty:
+        return pd.DataFrame(columns=[
+            "AvgGoalsScored", "AvgGoalsConceded",
+            "Last5Goals", "Last5Conceded",
+            "WinRate", "PointsTotal", "MatchesPlayed",
+        ])
+    return get_latest_team_stats(data)
+
+def get_live_team_stats(current_data, previous_season_data, current_teams, min_matches=5):
+    current_stats = get_latest_team_stats_safe(current_data)
     prev_stats = get_latest_team_stats(previous_season_data)
     prev_stats["PointsPerGame"] = prev_stats["PointsTotal"] / prev_stats["MatchesPlayed"]
 
@@ -270,8 +278,15 @@ def get_live_team_stats(current_data, previous_season_data, min_matches=5):
         "WinRate", "PointsPerGame",
     ]].mean()
 
+    zero_row = pd.Series({
+        "AvgGoalsScored": 0.0, "AvgGoalsConceded": 0.0,
+        "Last5Goals": 0.0, "Last5Conceded": 0.0,
+        "WinRate": 0.0, "PointsTotal": 0.0, "MatchesPlayed": 0,
+    })
+
     rows = []
-    for team, row in current_stats.iterrows():
+    for team in current_teams:
+        row = current_stats.loc[team] if team in current_stats.index else zero_row
         matches_played = row["MatchesPlayed"]
         weight = min(matches_played / min_matches, 1.0)
 
