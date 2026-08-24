@@ -7,7 +7,7 @@ from model import split_data, train_model
 
 st.set_page_config(page_title="Premier League Predictor", layout="wide")
 
-# --- Secrets (loaded once, at the top, so every function below can see them) ---
+#Secrets (loaded once, at the top, so every function below can see them)
 with open("resources/secrets.toml", "rb") as f:
     secrets = tomllib.load(f)
 
@@ -35,7 +35,7 @@ def load_previous_season():
 def train():
     """
     Returns a trained model, or None only in the unlikely case that even
-    combined data isn't enough to stratify-split (e.g. missing files).
+    combined data isn't enough to stratify-split
     Training data = last season's full results + this season's matches so far.
     """
     current = load_data()
@@ -127,9 +127,9 @@ def get_live_standings():
 
 
 def heuristic_prediction(home, away):
-    """
-    Simple fallback used when there's no trained model yet.
-    """
+
+    #Simple fallback used when there's no trained model yet.
+    
     home_score = (
         home["AvgGoalsScored"] - home["AvgGoalsConceded"] + home["PointsTotal"] / 10
     )
