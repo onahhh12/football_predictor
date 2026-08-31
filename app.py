@@ -117,9 +117,9 @@ def get_live_standings():
             "Won": entry["won"],
             "Drawn": entry["draw"],
             "Lost": entry["lost"],
-            "GoalsFor": entry["goalsFor"],
-            "GoalsAgainst": entry["goalsAgainst"],
-            "GoalDiff": entry["goalDifference"],
+            "Goals Scored": entry["goalsFor"],
+            "Goals Scored Against": entry["goalsAgainst"],
+            "Goal Difference": entry["goalDifference"],
         })
 
     table = pd.DataFrame(rows).set_index("Team")
