@@ -15,18 +15,7 @@ def create_features(data):
     data.loc[data["HomeGoals"] > data["AwayGoals"], "Outcome"] = "H"
     data.loc[data["HomeGoals"] < data["AwayGoals"], "Outcome"] = "A"
 
-    bad_dates = pd.to_datetime(
-    data["Date"],
-    dayfirst=True,
-    errors="coerce"
-    )
-    
-    print("BAD DATES:")
-    print(data.loc[bad_dates.isna(), ["Date", "Home Team", "Away Team"]])
-    print("================================")
-    
-    if data["Date"].isna().any():
-        raise ValueError("Invalid dates found in dataset.")
+    data["Date"] = pd.to_datetime(data["Date"], dayfirst=True)
         
     home = data[["Date", "Home Team", "Away Team", "HomeGoals", "AwayGoals", "Outcome"]].copy()
     home["Team"] = home["Home Team"]
