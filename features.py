@@ -1,5 +1,22 @@
 import pandas as pd
 
+
+def _parse_dates(data, column="Date"):
+    parsed = pd.to_datetime(
+        data[column].astype(str).str.strip(),
+        dayfirst=True,
+        format="mixed",
+        errors="coerce",
+    )
+    n_before = len(data)
+    data = data.copy()
+    data[column] = parsed
+    dropped = data[column].isna().sum()
+    if dropped:
+        print(f"_parse_dates: dropping {dropped}/{n_before} rows with unparseable '{column}' values")
+    return data.dropna(subset=[column])
+
+
 def create_features(data):
     data = data.copy()
 
@@ -15,8 +32,8 @@ def create_features(data):
     data.loc[data["HomeGoals"] > data["AwayGoals"], "Outcome"] = "H"
     data.loc[data["HomeGoals"] < data["AwayGoals"], "Outcome"] = "A"
 
-    data["Date"] = pd.to_datetime(data["Date"], dayfirst=True)
-        
+    data = _parse_dates(data)
+
     home = data[["Date", "Home Team", "Away Team", "HomeGoals", "AwayGoals", "Outcome"]].copy()
     home["Team"] = home["Home Team"]
     home["Opponent"] = home["Away Team"]
@@ -68,22 +85,22 @@ def create_features(data):
     team_matches["Win"] = (
         team_matches["GoalsScored"] > team_matches["GoalsConceded"]
     ).astype(int)
- 
+
     team_matches["WinsBefore"] = (
         team_matches.groupby("Team")["Win"]
         .transform(lambda x: x.shift(1).fillna(0).cumsum())
     )
- 
+
     team_matches["WinRateBefore"] = (
         team_matches["WinsBefore"] / team_matches["MatchesPlayed"].replace(0, float("nan"))
     ).fillna(0)
- 
-    #Home/away-specific win rates 
+
+    #Home/away-specific win rates
     team_matches["IsHome"] = (team_matches["Team"] == team_matches["Home Team"]).astype(int)
     team_matches["IsAway"] = (team_matches["Team"] == team_matches["Away Team"]).astype(int)
     team_matches["HomeWin"] = team_matches["Win"] * team_matches["IsHome"]
     team_matches["AwayWin"] = team_matches["Win"] * team_matches["IsAway"]
- 
+
     team_matches["HomeWinsBefore"] = (
         team_matches.groupby("Team")["HomeWin"]
         .transform(lambda x: x.shift(1).fillna(0).cumsum())
@@ -100,7 +117,7 @@ def create_features(data):
         team_matches.groupby("Team")["IsAway"]
         .transform(lambda x: x.shift(1).fillna(0).cumsum())
     )
- 
+
     team_matches["HomeWinRate"] = (
         team_matches["HomeWinsBefore"] / team_matches["HomeMatchesPlayed"].replace(0, float("nan"))
     ).fillna(0)
@@ -127,7 +144,7 @@ def create_features(data):
         "WinRateBefore": "HomeWinRateBefore",
         "PointsBefore": "HomePointsBefore",
     })
- 
+
     away_features = team_matches[team_matches["Team"] == team_matches["Away Team"]].copy()
     away_features = away_features.rename(columns={
         "AvgGoalsScored": "AwayAvgGoalsBefore",
@@ -137,14 +154,14 @@ def create_features(data):
         "WinRateBefore": "AwayWinRateBefore",
         "PointsBefore": "AwayPointsBefore",
     })
- 
+
     match_data = home_features.merge(
         away_features,
         on=["Date", "Home Team", "Away Team"],
         how="left",
     )
- 
-    #Final feature set 
+
+    #Final feature set
     features = match_data[[
         "Date",
         "Home Team",
@@ -162,7 +179,7 @@ def create_features(data):
         "AwayWinRateBefore",
         "AwayPointsBefore",
     ]].copy()
- 
+
     features["AttackDifference"] = (
         features["HomeAvgGoalsBefore"] - features["AwayAvgGoalsBefore"]
     )
@@ -178,14 +195,14 @@ def create_features(data):
     features["PointsDifference"] = (
         features["HomePointsBefore"] - features["AwayPointsBefore"]
     )
- 
-    #Final feature set 
+
+    #Final feature set
     features = features.merge(
         data[["Date", "Home Team", "Away Team", "Outcome"]],
         on=["Date", "Home Team", "Away Team"],
         how="left",
     )
- 
+
     return features
 
 
@@ -201,7 +218,7 @@ def get_latest_team_stats(data):
     data["HomeGoals"] = goals["HomeGoals"]
     data["AwayGoals"] = goals["AwayGoals"]
 
-    data["Date"] = pd.to_datetime(data["Date"], dayfirst=True)
+    data = _parse_dates(data)
     data = data.sort_values("Date").reset_index(drop=True)
 
     home = data[["Date", "Home Team", "Away Team", "HomeGoals", "AwayGoals"]].copy()
@@ -265,6 +282,7 @@ def get_latest_team_stats_safe(data):
             "WinRate", "PointsTotal", "MatchesPlayed",
         ])
     return get_latest_team_stats(data)
+
 
 def get_live_team_stats(current_data, previous_season_data, current_teams, min_matches=5):
     current_stats = get_latest_team_stats_safe(current_data)
