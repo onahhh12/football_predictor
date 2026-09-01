@@ -21,8 +21,13 @@ def create_features(data):
     errors="coerce"
     )
     
+    print("BAD DATES:")
     print(data.loc[bad_dates.isna(), "Date"])
-
+    data["Date"] = bad_dates
+    
+    if data["Date"].isna().any():
+        raise ValueError("Invalid dates found in dataset.")
+        
     home = data[["Date", "Home Team", "Away Team", "HomeGoals", "AwayGoals", "Outcome"]].copy()
     home["Team"] = home["Home Team"]
     home["Opponent"] = home["Away Team"]
