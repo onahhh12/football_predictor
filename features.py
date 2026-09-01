@@ -22,8 +22,8 @@ def create_features(data):
     )
     
     print("BAD DATES:")
-    print(data.loc[bad_dates.isna(), "Date"])
-    data["Date"] = bad_dates
+    print(data.loc[bad_dates.isna(), ["Date", "Home Team", "Away Team"]])
+    print("================================")
     
     if data["Date"].isna().any():
         raise ValueError("Invalid dates found in dataset.")
