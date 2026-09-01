@@ -15,8 +15,13 @@ def create_features(data):
     data.loc[data["HomeGoals"] > data["AwayGoals"], "Outcome"] = "H"
     data.loc[data["HomeGoals"] < data["AwayGoals"], "Outcome"] = "A"
 
-    data["Date"] = pd.to_datetime(data["Date"], dayfirst=True)
-    data = data.sort_values("Date").reset_index(drop=True)
+    bad_dates = pd.to_datetime(
+    data["Date"],
+    dayfirst=True,
+    errors="coerce"
+    )
+    
+    print(data.loc[bad_dates.isna(), "Date"])
 
     home = data[["Date", "Home Team", "Away Team", "HomeGoals", "AwayGoals", "Outcome"]].copy()
     home["Team"] = home["Home Team"]
