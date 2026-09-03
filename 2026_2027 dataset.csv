@@ -1,25 +1,24 @@
 Match Number,Round Number,Date,Location,Home Team,Away Team,Result
-1,1,21/08/2026,Emirates Stadium,Arsenal,Conventry City,3 - 0
-2,1,22/08/2026,MKM Stadium,Hull City,Manchester United,2 - 0
-3,1,22/08/2026,Hill Dickinson Stadium,Everton,Crystal Palace,2 - 0
-4,1,22/08/2026,Portman Road,Ipswich Town,Sunderland,2 - 1
-5,1,22/08/2026,The City Ground,Nottingham Forest,Leeds United,0 - 1
-6,1,22/08/2026,Gtech Community Stadium,Brentford,Tottenham Hotspur,3 - 0
-7,1,23/08/2026,American Express Stadium,Brighton,Aston Villa,4 - 0
-8,1,23/08/2026,Etihad Stadium,Manchester City,Bournemouth,2 - 1
-9,1,23/08/2026,St. James' Park,Newcastle United,Liverpool,2 - 2
-10,1,23/08/2026,Craven Cottage,Fulham,Chelsea,2 - 3
-11,2,28/08/2026,Selhurst Park,Crystal Palace,Manchester City,1 - 4
-12,2,29/08/2026,Anfield,Liverpool,Nottingham Forest,2 - 2
-13,2,29/08/2026,Vitality Stadium,Bournemouth,Everton,1 - 1
-14,2,29/08/2026,Coventry Building Society Arena,Coventry City,Hull City,0 - 1
-15,2,29/08/2026,Tottenham Hotspur Stadium,Tottenham Hotspur,Newcastle United,0 - 1
-16,2,30/08/2026,Stamford Bridge,Chelsea,Brighton,4 - 3
-17,2,30/08/2026,Elland Road,Leeds United,Brentford,1 - 1
-18,2,30/08/2026,Stadium of Light,Sunderland,Fulham,1 - 0
-19,2,30/08/2026,Old Trafford,Manchester United,Ipswich Town,5 - 2
-20,2,31/08/2026,Villa Park,Aston Villa,Arsenal,0 - 1
-
+1,1,21/08/2026 21:00,Emirates Stadium,Arsenal,Conventry City,3 - 0
+2,1,22/08/2026 13:30,MKM Stadium,Hull City,Manchester United,2 - 0
+3,1,22/08/2026 16:00,Hill Dickinson Stadium,Everton,Crystal Palace,2 - 0
+4,1,22/08/2026 16:00,Portman Road,Ipswich Town,Sunderland,2 - 1
+5,1,22/08/2026 16:00,The City Ground,Nottingham Forest,Leeds United,0 - 1
+6,1,22/08/2026 18:30,Gtech Community Stadium,Brentford,Tottenham Hotspur,3 - 0
+7,1,23/08/2026 15:30,American Express Stadium,Brighton,Aston Villa,4 - 0
+8,1,23/08/2026 15:00,Etihad Stadium,Manchester City,Bournemouth,2 - 1
+9,1,23/08/2026 17:30,St. James' Park,Newcastle United,Liverpool,2 - 2
+10,1,24/08/2026 21:00,Craven Cottage,Fulham,Chelsea,2 - 3
+11,2,28/08/2026 21:00,Selhurst Park,Crystal Palace,Manchester City,1 - 4
+12,2,29/08/2026 13:30,Anfield,Liverpool,Nottingham Forest,2 - 2
+13,2,29/08/2026 16:00,Vitality Stadium,Bournemouth,Everton,1 - 1
+14,2,29/08/2026 16:00,Coventry Building Society Arena,Coventry City,Hull City,0 - 1
+15,2,29/08/2026 18:30,Tottenham Hotspur Stadium,Tottenham Hotspur,Newcastle United,0 - 1
+16,2,30/08/2026 15:00,Stamford Bridge,Chelsea,Brighton,4 - 3
+17,2,30/08/2026 15:00,Elland Road,Leeds United,Brentford,1 - 1
+18,2,30/08/2026 15:00,Stadium of Light,Sunderland,Fulham,1 - 0
+19,2,30/08/2026 17:30,Old Trafford,Manchester United,Ipswich Town,5 - 2
+20,2,31/08/2026 21:00,Villa Park,Aston Villa,Arsenal,0 - 1
 
 
 

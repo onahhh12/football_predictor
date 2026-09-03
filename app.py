@@ -87,7 +87,7 @@ def get_upcoming_fixtures():
 
     rows = []
     for m in upcoming:
-        kickoff = pd.to_datetime(m["utcDate"])
+        kickoff = pd.to_datetime(m["utcDate"], utc=True).tz_convert("Africa/Johannesburg")
         rows.append({
             "Date": kickoff.strftime("%a %d %b, %H:%M"),
             "Home": m["homeTeam"]["name"],
@@ -163,7 +163,7 @@ with tab1:
         if fixtures.empty:
             st.caption("No upcoming fixtures found.")
         else:
-            st.dataframe(fixtures, use_container_width=True, hide_index=True)
+            st.dataframe(fixtures,width="stretch", hide_index=True)
     except Exception as e:
         st.error(f"Couldn't fetch fixtures: {e}")
 
@@ -219,6 +219,6 @@ with tab2:
     st.subheader("League Table (live standings)")
     try:
         table = get_live_standings()
-        st.dataframe(table, use_container_width=True)
+        st.dataframe(table,width="stretch", hide_index=True)
     except Exception as e:
         st.error(f"Couldn't fetch live standings: {e}")
