@@ -219,6 +219,6 @@ with tab2:
     st.subheader("League Table (live standings)")
     try:
         table = get_live_standings()
-        st.dataframe(table,width="stretch", hide_index=True)
+        st.dataframe(table,width="stretch")
     except Exception as e:
         st.error(f"Couldn't fetch live standings: {e}")
