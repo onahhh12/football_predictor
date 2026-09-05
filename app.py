@@ -14,10 +14,10 @@ with open("resources/secrets.toml", "rb") as f:
 FOOTBALL_DATA_KEY = secrets["API_KEY"]
 
 CURRENT_SEASON_TEAMS = [
-    "Liverpool", "Arsenal", "Man City", "Chelsea", "Newcastle",
-    "Aston Villa", "Nott'm Forest", "Brighton", "Bournemouth", "Fulham",
-    "Brentford", "Crystal Palace", "Everton", "Hull City", "Man Utd",
-    "Coventry City", "Spurs", "Leeds", "Ipswich Town", "Sunderland",
+    "Liverpool FC", "Arsenal FC", "Manchester City FC", "Chelsea FC", "Newcastle United FC",
+    "Aston Villa FC", "Nottingham Forest FC", "Brighton & Hove Albion", "AFC Bournemouth", "Fulham FC",
+    "Brentford FC", "Crystal Palace FC", "Everton FC", "Hull City AFC", "Manchester United FC",
+    "Coventry City FC", "Tottenham Hotspurs FC", "Leeds United FC", "Ipswich Town FC", "Sunderland AFC",
 ]
 
 
