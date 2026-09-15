@@ -7,11 +7,7 @@ from model import split_data, train_model
 
 st.set_page_config(page_title="Premier League Predictor", layout="wide")
 
-#Secrets (loaded once, at the top, so every function below can see them)
-with open("resources/secrets.toml", "rb") as f:
-    secrets = tomllib.load(f)
-
-FOOTBALL_DATA_KEY = secrets["API_KEY"]
+FOOTBALL_DATA_KEY = st.secrets["API_KEY"]
 
 CURRENT_SEASON_TEAMS = [
     "Liverpool", "Arsenal", "Man City", "Chelsea", "Newcastle",
