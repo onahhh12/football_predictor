@@ -107,6 +107,7 @@ def get_live_standings():
     rows = []
     for entry in table_entries:
         rows.append({
+            "Pos": entry["position"],
             "Team": entry["team"]["name"],
             "Played": entry["playedGames"],
             "Points": entry["points"],
@@ -215,6 +216,6 @@ with tab2:
     st.subheader("League Table (live standings)")
     try:
         table = get_live_standings()
-        st.dataframe(table,width="stretch")
+        st.dataframe(table,width="stretch", hide_index=True)
     except Exception as e:
         st.error(f"Couldn't fetch live standings: {e}")
