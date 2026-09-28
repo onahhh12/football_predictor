@@ -119,7 +119,7 @@ def get_live_standings():
             "Goal Difference": entry["goalDifference"],
         })
 
-    table = pd.DataFrame(rows).set_index("Team")
+    table = pd.DataFrame(rows)
     return table
 
 
